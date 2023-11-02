@@ -1,0 +1,27 @@
+name: Build HTML
+
+on:
+  push:
+  branches:
+  - main
+
+jobs:
+  build:
+  runs-on: ubuntu-latest
+
+steps:
+  - name: Checkout code
+uses: actions/checkout@v2
+
+- name: Install R
+run: |
+  sudo apt-get update
+sudo apt-get install r-base
+R -e "install.packages('rmarkdown')"
+R -e "install.packages('tinytex')"
+sudo su - -c "R -e 'tinytex::install_tinytex()'"
+sudo su - -c "R -e 'tinytex::tlmgr_install('xcolor')"
+shell: bash
+
+- name: Build HTML
+run: Rscript -e "rmarkdown::render('zresidual_functional_form.Rmd')"
